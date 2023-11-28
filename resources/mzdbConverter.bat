@@ -1,1 +1,1 @@
- .\jre\bin\java -Xms512m -Xmx768m -Djava.library.path="./lib" -jar mzdb-converter-@version@.jar %*
+ .\jre\bin\java -Xms512m -Xmx768m -Dlogback.configurationFile=./logback.xml -cp ".;./lib" -jar mzdb-converter-@version@.jar %*
