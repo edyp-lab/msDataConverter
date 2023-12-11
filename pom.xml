@@ -12,14 +12,14 @@
 
     <groupId>fr.profi</groupId>
     <artifactId>mzdb-converter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
 
     <dependencies>
 
         <dependency>
             <groupId>edyp.mzdb.server</groupId>
             <artifactId>MzdbServerWriter</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.2.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -33,12 +33,15 @@
             <version>1.2.1-SNAPSHOT</version>
         </dependency>
 
+
         <dependency>
             <groupId>fr.profi</groupId>
-            <artifactId>thermoaccesszip</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <artifactId>ThermoAccess</artifactId>
+            <version>1.0.2.1</version>
             <type>zip</type>
+            <classifier>win-x64</classifier>
         </dependency>
+
 
         <!-- Logging -->
         <dependency>

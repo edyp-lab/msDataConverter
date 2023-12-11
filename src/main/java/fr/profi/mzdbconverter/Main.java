@@ -67,7 +67,7 @@ public class Main {
         // prepare command with parameters
 
         // check localisation of the ThermoAccess.exe
-        File pathFile = new File(".\\target\\unzip-dependencies\\ThermoAccess_win-x64_1.0.1\\"); // path for debugging with IDE.
+        File pathFile = new File(".\\target\\unzip-dependencies\\ThermoAccess_1.0.2.1-win-x64\\"); // path for debugging with IDE.
         if (! pathFile.exists()) {
             pathFile = new File(".\\ThermoAccess_win-x64_1.0.1\\");
         }
@@ -90,8 +90,6 @@ public class Main {
 
         pb.directory(pathFile);
 
-
-        //System.out.println(pathFile.getAbsolutePath()); //JPM.TODO put in comment
 
 
         try {
