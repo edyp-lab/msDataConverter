@@ -10,6 +10,11 @@
         <version>1.2.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <thermoAccess.version>1.0.2.1</thermoAccess.version>
+        <thermoAccess.classifier>win-x64</thermoAccess.classifier>
+    </properties>
+
     <groupId>fr.profi</groupId>
     <artifactId>mzdb-converter</artifactId>
     <version>1.2.1-SNAPSHOT</version>
@@ -76,15 +81,11 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/config</outputDirectory>
+                            <outputDirectory>${project.build.directory}/classes/fr/profi/mzdbconverter</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
-                                    <excludes>
-                                        <exclude>META-INF/**</exclude>
-                                        <exclude>*.bat</exclude>
-                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>

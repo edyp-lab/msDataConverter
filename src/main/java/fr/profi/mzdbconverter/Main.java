@@ -9,6 +9,7 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Properties;
 
 
 /**
@@ -67,15 +68,31 @@ public class Main {
         // prepare command with parameters
 
         // check localisation of the ThermoAccess.exe
-        final String dirName = "ThermoAccess_1.0.2.1-win-x64";
+
+        String dirName = "";
+
+        try {
+            Properties properties = new Properties();
+            properties.load(fr.profi.mzdbconverter.Main.class.getResourceAsStream("mzdbServerConverter.properties"));
+            String version = properties.getProperty("thermoaccess.version", "");
+            String classifier = properties.getProperty("thermoaccess.classifier", "");
+            dirName = "ThermoAccess_"+version+"-"+classifier;
+
+
+        } catch (Exception e) {
+            LOGGER.warn("error in addMzdbMetaData : can not get current version");
+        }
+
         File pathFile = new File(".\\target\\unzip-dependencies\\"+dirName+"\\"); // path for debugging with IDE.
         if (! pathFile.exists()) {
             pathFile = new File(".\\"+dirName+"\\");
         }
 
+        String absolutePath = pathFile.getAbsolutePath()+"\\ThermoAccess.exe";
+        System.out.println("Thermo Access : "+absolutePath);
 
         ArrayList<String> cmds = new ArrayList(3+argv.length);
-        cmds.add(pathFile.getAbsolutePath()+"\\ThermoAccess.exe");
+        cmds.add(absolutePath);
 
         if (portSpecifiedIndex != -1) {
             argv[portSpecifiedIndex] = String.valueOf(port);
