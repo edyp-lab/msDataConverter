@@ -11,13 +11,13 @@
     </parent>
 
     <properties>
-        <thermoAccess.version>1.0.2.1</thermoAccess.version>
+        <thermoAccess.version>1.0.2.2</thermoAccess.version>
         <thermoAccess.classifier>win-x64</thermoAccess.classifier>
     </properties>
 
     <groupId>fr.profi</groupId>
     <artifactId>mzdb-converter</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
 
     <dependencies>
 
@@ -42,9 +42,9 @@
         <dependency>
             <groupId>fr.profi</groupId>
             <artifactId>ThermoAccess</artifactId>
-            <version>1.0.2.1</version>
+            <version>${thermoAccess.version}</version>
             <type>zip</type>
-            <classifier>win-x64</classifier>
+            <classifier>${thermoAccess.classifier}</classifier>
         </dependency>
 
 
