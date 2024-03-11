@@ -76,7 +76,7 @@ public class Main {
             properties.load(fr.profi.mzdbconverter.Main.class.getResourceAsStream("mzdbServerConverter.properties"));
             String version = properties.getProperty("thermoaccess.version", "");
             String classifier = properties.getProperty("thermoaccess.classifier", "");
-            dirName = "ThermoAccess_"+version+"-"+classifier;
+            dirName = "ThermoAccess-"+version+"-"+classifier;
 
 
         } catch (Exception e) {
