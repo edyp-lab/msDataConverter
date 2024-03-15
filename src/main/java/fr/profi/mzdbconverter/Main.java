@@ -1,10 +1,12 @@
 package fr.profi.mzdbconverter;
 
-import fr.edyp.mzdb.server.MzdbController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -91,7 +93,7 @@ public class Main {
         String absolutePath = pathFile.getAbsolutePath()+"\\ThermoAccess.exe";
         System.out.println("Thermo Access : "+absolutePath);
 
-        ArrayList<String> cmds = new ArrayList(3+argv.length);
+        ArrayList<String> cmds = new ArrayList<>(3+argv.length);
         cmds.add(absolutePath);
 
         if (portSpecifiedIndex != -1) {
