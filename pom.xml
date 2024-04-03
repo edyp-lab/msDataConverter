@@ -22,7 +22,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>edyp.mzdb.server</groupId>
+            <groupId>fr.profi.mzdb.server</groupId>
             <artifactId>MzdbServerWriter</artifactId>
             <version>1.2.2-SNAPSHOT</version>
         </dependency>
@@ -35,6 +35,11 @@
         <dependency>
             <groupId>fr.profi</groupId>
             <artifactId>mzdb-processing_${scala.compat.version}</artifactId>
+            <version>1.2.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.profi</groupId>
+            <artifactId>timstof-access</artifactId>
             <version>1.2.1-SNAPSHOT</version>
         </dependency>
 
@@ -130,7 +135,6 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <includeTypes>jar</includeTypes>
-                            <excludeArtifactIds>timstof-access</excludeArtifactIds>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
@@ -210,7 +214,7 @@
                             <classpathLayoutType>custom</classpathLayoutType>
                             <!--suppress UnresolvedMavenProperty -->
                             <customClasspathLayout>lib/${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}</customClasspathLayout>
-                            <mainClass>fr.profi.mzdbconverter.Main</mainClass>
+                            <mainClass>fr.profi.mzdbconverter.MzDBConverterMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
