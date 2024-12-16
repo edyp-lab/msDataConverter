@@ -13,11 +13,12 @@
     <properties>
         <thermoAccess.version>1.0.2.3</thermoAccess.version>
         <thermoAccess.classifier>win-x64</thermoAccess.classifier>
+        <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAcces could be in other classifier -->
     </properties>
 
     <groupId>fr.profi</groupId>
     <artifactId>mzdb-converter</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 
     <dependencies>
 
@@ -50,6 +51,15 @@
             <version>${thermoAccess.version}</version>
             <type>zip</type>
             <classifier>${thermoAccess.classifier}</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>jdk</artifactId>
+            <version>17.0.3.1</version>
+            <type>zip</type>
+            <classifier>${os.classifier}</classifier>
+            <scope>runtime</scope>
         </dependency>
 
 
@@ -187,33 +197,6 @@
                 </executions>
 
             </plugin>
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-
-
-                    <!-- This copies the JRE used to do the build from java.home -->
-                    <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need -->
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/java/jre</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${java.home}</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
