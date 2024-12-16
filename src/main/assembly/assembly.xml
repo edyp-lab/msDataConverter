@@ -36,10 +36,6 @@
       <outputDirectory></outputDirectory>
     </fileSet>
 
-    <fileSet>
-      <directory>${project.build.directory}/java</directory>
-      <outputDirectory></outputDirectory>
-    </fileSet>
 
     <fileSet>
       <filtered>true</filtered>
