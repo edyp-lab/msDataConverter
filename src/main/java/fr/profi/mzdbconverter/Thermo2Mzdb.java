@@ -1,6 +1,7 @@
 package fr.profi.mzdbconverter;
 
 import fr.profi.mzdb.server.MzdbServerMain;
+import fr.profi.util.ThreadLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +23,15 @@ public class Thermo2Mzdb {
     // look for a specific port
     int port = 8090;
     int portSpecifiedIndex = -1;
+    boolean foundCommand  = false;
     for (int i=0;i<argv.length-1;i++) {
       String param = argv[i];
       if (param.equals("-p") || param.equals("--port")) {
         portSpecifiedIndex = i+1;
         port = Integer.parseInt(argv[portSpecifiedIndex]);
-
       }
+      if (param.equals("convert"))
+        foundCommand = true;
     }
 
 
@@ -47,35 +50,62 @@ public class Thermo2Mzdb {
       return;
     }
 
+    // Update arguemnt with final port
+    if (portSpecifiedIndex != -1) {
+      argv[portSpecifiedIndex] = String.valueOf(port);
+    } else {
+      int index = argv.length;
+      argv = Arrays.copyOf(argv , index+2);
+      argv[index+1] = "-p";
+      argv[index] = String.valueOf(port);
+    }
+    String[] newArg = argv;
+    if(!foundCommand) { //add specific convert command
+      int index = argv.length;
+      newArg = new String[index+1];
+      System.arraycopy(argv, 0, newArg, 1, index);
+      newArg[0] = "convert";
+    }
 
+    final String[] args = {"-p", Integer.toString(port)};
 
     // --- mzdb server start
-
-    String[] args = { Integer.toString(port)};
+    MzdbServerMain.getInstance().initServer(args);
     Thread t = new Thread(new Runnable() {
       @Override
       public void run() {
-        MzdbServerMain.main(args);
-      }
+            MzdbServerMain.getInstance().start();
+          }
     });
     t.setDaemon(false); // the main thread will wait for the ending of the server thread
+    t.setUncaughtExceptionHandler(new ThreadLogger(LOGGER));
     t.start();
 
-    // --- start ThermoAccess
+    // --- start thermo access reader
+    int errorCode = startThermoAccess(newArg);
+    if (errorCode != 0) {
+      MzdbServerMain.getInstance().interrupt(false);
+      t.interrupt();
+    } else {
+      MzdbServerMain.getInstance().interrupt(false);
+      t.interrupt();
+    }
+
+    System.exit(errorCode);
+  }
+
+  public static int startThermoAccess(String[] argv) {
 
     // prepare command with parameters
-
     // check localisation of the ThermoAccess.exe
 
     String dirName = "";
-
     try {
       Properties properties = new Properties();
       properties.load(MzDBConverterMain.class.getResourceAsStream("mzdbServerConverter.properties"));
       String version = properties.getProperty("thermoaccess.version", "");
       String classifier = properties.getProperty("thermoaccess.classifier", "");
       dirName = "ThermoAccess-"+version+"-"+classifier;
-
 
     } catch (Exception e) {
       LOGGER.warn("error in addMzdbMetaData : can not get current version");
@@ -87,52 +117,39 @@ public class Thermo2Mzdb {
     }
 
     String absolutePath = pathFile.getAbsolutePath()+"\\ThermoAccess.exe";
-    System.out.println("Thermo Access : "+absolutePath);
+    LOGGER.debug("\nUse ThermoAccess : "+absolutePath);
 
-    ArrayList<String> cmds = new ArrayList<>(3+argv.length);
+    ArrayList<String> cmds = new ArrayList<>(1+ argv.length);
     cmds.add(absolutePath);
-
-    if (portSpecifiedIndex != -1) {
-      argv[portSpecifiedIndex] = String.valueOf(port);
-    } else {
-      cmds.add("-p");
-      cmds.add(String.valueOf(port));
-    }
     cmds.addAll(Arrays.asList(argv));
 
     // Prepare process builder, we redirect error stream to ouput stream to be able to read both
     ProcessBuilder pb = new ProcessBuilder(cmds);
     pb.redirectErrorStream(true);
-
     pb.directory(pathFile);
-
-
 
     try {
       Process p = pb.start();
       BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String line;
       while ((line = br.readLine()) != null) {
-        LOGGER.info(line);
+        System.out.println("- ThermoAccess:\t"+line);
       }
 
       int exitCode = p.waitFor();
       if (exitCode != 0) {
-
         LOGGER.error(cmds+" abnormally finished with exitCode "+exitCode);
         LOGGER.info("Interrupt socket server");
-        MzdbServerMain.interrupt();
-        System.exit(exitCode);
       }
+
+      return exitCode;
 
     } catch (Exception e ) {
       LOGGER.error(cmds+" abnormally finished");
       LOGGER.error(e.getMessage(), e);
       LOGGER.info("Interrupt socket server");
-      MzdbServerMain.interrupt();
-      System.exit(-1);
+      return -1;
     }
-
   }
 
   private static boolean isPortAvailable(int port) {
