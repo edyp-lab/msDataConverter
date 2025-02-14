@@ -7,25 +7,26 @@
     <parent>
         <artifactId>profi-pom</artifactId>
         <groupId>fr.proline</groupId>
-        <version>1.2.0</version>
+        <version>1.3.0-SNAPSHOT</version>
     </parent>
 
     <properties>
         <thermoAccess.version>1.0.3.0</thermoAccess.version>
         <thermoAccess.classifier>win-x64</thermoAccess.classifier>
         <mzdb.version>1.3.2-SNAPSHOT</mzdb.version>
-        <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAcces could be in other classifier -->
+        <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAccess could be in other classifier -->
     </properties>
 
-    <groupId>fr.profi</groupId>
-    <artifactId>mzdb-converter</artifactId>
+    <groupId>fr.profi.msdata</groupId>
+    <artifactId>msdata-converter</artifactId>
     <version>1.3.0-SNAPSHOT</version>
+    <name>msDataConverter</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>fr.profi.mzdb.server</groupId>
-            <artifactId>MzdbServerWriter</artifactId>
+            <groupId>fr.profi.msdata</groupId>
+            <artifactId>msdata-consumer</artifactId>
             <version>1.2.3-SNAPSHOT</version>
         </dependency>
 
@@ -47,7 +48,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.14.0</version>
         </dependency>
         <dependency>
             <groupId>com.oracle</groupId>
