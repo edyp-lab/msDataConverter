@@ -1,6 +1,6 @@
-package fr.profi.mzdbconverter;
+package fr.profi.msdata.mzdbconverter;
 
-import fr.profi.mzdb.server.MzdbServerMain;
+import fr.profi.msdata.consumer.MsDataConsumerMain;
 import fr.profi.util.ThreadLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,26 +70,16 @@ public class Thermo2Mzdb {
     final String[] args = {"-p", Integer.toString(port)};
 
     // --- mzdb server start
-    MzdbServerMain.getInstance().initServer(args);
-    Thread t = new Thread(new Runnable() {
-      @Override
-      public void run() {
-            MzdbServerMain.getInstance().start();
-          }
-    });
+    MsDataConsumerMain.getInstance().initServer(args);
+    Thread t = new Thread(() -> MsDataConsumerMain.getInstance().start());
     t.setDaemon(false); // the main thread will wait for the ending of the server thread
     t.setUncaughtExceptionHandler(new ThreadLogger(LOGGER));
     t.start();
 
     // --- start thermo access reader
     int errorCode = startThermoAccess(newArg);
-    if (errorCode != 0) {
-      MzdbServerMain.getInstance().interrupt(false);
-      t.interrupt();
-    } else {
-      MzdbServerMain.getInstance().interrupt(false);
-      t.interrupt();
-    }
+    MsDataConsumerMain.getInstance().interrupt(false);
+    t.interrupt();
 
     System.exit(errorCode);
   }
@@ -108,7 +98,7 @@ public class Thermo2Mzdb {
       dirName = "ThermoAccess-"+version+"-"+classifier;
 
     } catch (Exception e) {
-      LOGGER.warn("error in addMzdbMetaData : can not get current version");
+      LOGGER.warn("error in start ThermoAccess : can not get current version");
     }
 
     File pathFile = new File(".\\target\\unzip-dependencies\\"+dirName+"\\"); // path for debugging with IDE.

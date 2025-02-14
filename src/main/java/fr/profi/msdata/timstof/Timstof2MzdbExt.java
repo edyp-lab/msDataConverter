@@ -1,4 +1,4 @@
-package fr.profi.timstof;
+package fr.profi.msdata.timstof;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.beust.jcommander.JCommander;

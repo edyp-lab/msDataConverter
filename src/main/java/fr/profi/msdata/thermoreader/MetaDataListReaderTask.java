@@ -1,6 +1,6 @@
-package fr.profi.thermoreader;
+package fr.profi.msdata.thermoreader;
 
-import fr.profi.mzdb.serialization.SerializationCallback;
+import fr.profi.msdata.serialization.SerializationCallback;
 
 import java.io.File;
 import java.util.List;

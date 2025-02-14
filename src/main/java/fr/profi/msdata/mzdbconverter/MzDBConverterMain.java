@@ -1,6 +1,6 @@
-package fr.profi.mzdbconverter;
+package fr.profi.msdata.mzdbconverter;
 
-import fr.profi.timstof.Timstof2Mzdb;
+import fr.profi.msdata.timstof.Timstof2Mzdb;
 
 
 /**

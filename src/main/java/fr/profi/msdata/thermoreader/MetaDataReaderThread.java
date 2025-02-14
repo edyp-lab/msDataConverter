@@ -1,8 +1,8 @@
-package fr.profi.thermoreader;
+package fr.profi.msdata.thermoreader;
 
-import fr.profi.mzdb.serialization.SerializationCallback;
-import fr.profi.mzdb.server.MzdbServerMain;
-import fr.profi.mzdbconverter.Thermo2Mzdb;
+import fr.profi.msdata.serialization.SerializationCallback;
+import fr.profi.msdata.consumer.MsDataConsumerMain;
+import fr.profi.msdata.mzdbconverter.Thermo2Mzdb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,13 +75,13 @@ public class MetaDataReaderThread extends Thread {
 
         if(currentCallback != task.getCallback()) {
           LOGGER.debug("  ->  add new callBack .... ");
-          MzdbServerMain.getInstance().addCallBack(task.getCallback());
+          MsDataConsumerMain.getInstance().addCallBack(task.getCallback());
           currentCallback = task.getCallback();
         }
 
         String rawPathOption;
         String rawPath;
-        if(MetaDataReaderTask.class.isInstance(task)) {
+        if(task instanceof MetaDataReaderTask) {
           rawPathOption = "-i";
           rawPath = ((MetaDataReaderTask)task).getInputFile().getAbsolutePath();
         } else { //Is MetaDataReaderListTask
@@ -95,17 +95,17 @@ public class MetaDataReaderThread extends Thread {
           }
           rawPath = sb.toString();
         }
-        LOGGER.info("\n\n  WILL RUN  ThermoAcess Process with : "+rawPathOption+" ==> "+rawPath);
+        LOGGER.info("\n\n  WILL RUN  ThermoAccess Process with : "+rawPathOption+" ==> "+rawPath);
         //Process next task
         String[]  commandArg = new String[5];
-        commandArg[0] = "acq_metadata"; //Read meta data argument
+        commandArg[0] = "metadata"; //Read meta data argument
         commandArg[1] = rawPathOption; //Input file
         commandArg[2] =rawPath;
         commandArg[3] ="-p";
-        commandArg[4] = Integer.toString(8090);;
+        commandArg[4] = Integer.toString(8090);
 
         int errorCode = Thermo2Mzdb.startThermoAccess(commandArg); //Run process
-        LOGGER.info("  ->  ThermoAcess Process returned code: "+errorCode);
+        LOGGER.info("  ->  ThermoAccess Process returned code: "+errorCode);
         if(errorCode != 0){
           currentCallback.run(rawPath, new ArrayList<>(), false);
         } //if no error, server should call callback with read data
@@ -122,17 +122,17 @@ public class MetaDataReaderThread extends Thread {
   @Override
   public void interrupt() {
     LOGGER.info("Interrupt MetaDateReader Thread");
-    MzdbServerMain.getInstance().interrupt(false);
+    MsDataConsumerMain.getInstance().interrupt(false);
     super.interrupt();
   }
 
   private void initServer() {
     // Init MzdbServer
     String[] args = { "-p", Integer.toString(m_serverPort), "-t"};
-    MzdbServerMain.getInstance().initServer(args);
+    MsDataConsumerMain.getInstance().initServer(args);
 
     //Run MzdbServer on its own Thread
-    Thread t = new Thread(() -> MzdbServerMain.getInstance().start(), "Main Server Thread");
+    Thread t = new Thread(() -> MsDataConsumerMain.getInstance().start(), "MainConsumer Thread");
     t.setDaemon(false); // the main thread will wait for the ending of the server thread
     t.start();
 

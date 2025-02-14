@@ -20,7 +20,7 @@
 
   <!-- FILE APPENDER -->
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>mzdbConverter-log.txt</file>
+    <file>msdataConverter-log.txt</file>
     <append>true</append>
 
     <!-- TTCCLayout -->

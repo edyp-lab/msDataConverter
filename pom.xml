@@ -99,7 +99,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/classes/fr/profi/mzdbconverter</outputDirectory>
+                            <outputDirectory>${project.build.directory}/classes/fr/profi/msdata/mzdbconverter</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory>
@@ -216,7 +216,7 @@
                             <classpathLayoutType>custom</classpathLayoutType>
                             <!--suppress UnresolvedMavenProperty -->
                             <customClasspathLayout>lib/${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}</customClasspathLayout>
-                            <mainClass>fr.profi.mzdbconverter.MzDBConverterMain</mainClass>
+                            <mainClass>fr.profi.msdata.mzdbconverter.MzDBConverterMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

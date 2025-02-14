@@ -1,4 +1,4 @@
-package fr.profi.timstof;
+package fr.profi.msdata.timstof;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
