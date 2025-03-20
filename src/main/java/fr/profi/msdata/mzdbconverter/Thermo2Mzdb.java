@@ -123,7 +123,7 @@ public class Thermo2Mzdb {
       BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String line;
       while ((line = br.readLine()) != null) {
-        System.out.println("- ThermoAccess:\t"+line);
+        System.out.println("- ThermoAccess["+Thread.currentThread().getName()+"]:\t"+line);
       }
 
       int exitCode = p.waitFor();

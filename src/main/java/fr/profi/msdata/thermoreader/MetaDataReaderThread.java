@@ -95,7 +95,7 @@ public class MetaDataReaderThread extends Thread {
           }
           rawPath = sb.toString();
         }
-        LOGGER.info("\n\n  WILL RUN  ThermoAccess Process with : "+rawPathOption+" ==> "+rawPath);
+        LOGGER.info("\n\n  WILL RUN  ThermoAccess Process with : "+rawPathOption+" ==> "+rawPath+"\n\n");
         //Process next task
         String[]  commandArg = new String[5];
         commandArg[0] = "metadata"; //Read meta data argument
@@ -104,11 +104,18 @@ public class MetaDataReaderThread extends Thread {
         commandArg[3] ="-p";
         commandArg[4] = Integer.toString(8090);
 
-        int errorCode = Thermo2Mzdb.startThermoAccess(commandArg); //Run process
-        LOGGER.info("  ->  ThermoAccess Process returned code: "+errorCode);
-        if(errorCode != 0){
-          currentCallback.run(rawPath, new ArrayList<>(), false);
-        } //if no error, server should call callback with read data
+        //Run ThermoAccess on its own Thread to allow multiple runs
+       final SerializationCallback  finalCallBack = currentCallback;
+        Thread t = new Thread(() -> {
+          LOGGER.info("\n\n  WILL RUN  ThermoAccess Process with : "+rawPathOption+" ==> "+rawPath);
+          int errorCode = Thermo2Mzdb.startThermoAccess(commandArg); //Run process
+          LOGGER.info("  ->  ThermoAccess Process returned code: "+errorCode);
+          if(errorCode != 0){
+            finalCallBack.run(rawPath, new ArrayList<>(), false);
+          } //if no error, server should call callback with read data
+        });
+        t.setDaemon(false); // the main thread will wait for the ending of the server thread
+        t.start();
 
       }
     } catch (Throwable t) {
