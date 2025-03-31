@@ -17,7 +17,7 @@ import java.util.Properties;
 
 public class Thermo2Mzdb {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MzDBConverterMain.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Thermo2Mzdb.class);
 
   public static void main(String[] argv) {
     // look for a specific port
@@ -46,7 +46,7 @@ public class Thermo2Mzdb {
     }
 
     if (! available) {
-      LOGGER.error("No port available between"+port+"and "+portMax);
+      LOGGER.error("No port available between {} and {}", port, portMax);
       return;
     }
 
@@ -107,7 +107,7 @@ public class Thermo2Mzdb {
     }
 
     String absolutePath = pathFile.getAbsolutePath()+"\\ThermoAccess.exe";
-    LOGGER.debug("\nUse ThermoAccess : "+absolutePath);
+    LOGGER.trace("\nUse ThermoAccess : {}", absolutePath);
 
     ArrayList<String> cmds = new ArrayList<>(1+ argv.length);
     cmds.add(absolutePath);
@@ -128,14 +128,13 @@ public class Thermo2Mzdb {
 
       int exitCode = p.waitFor();
       if (exitCode != 0) {
-        LOGGER.error(cmds+" abnormally finished with exitCode "+exitCode);
-        LOGGER.info("Interrupt socket server");
+        LOGGER.warn("An error occurs reading Thermo raw file. Error code: {}", exitCode);
       }
 
       return exitCode;
 
     } catch (Exception e ) {
-      LOGGER.error(cmds+" abnormally finished");
+      LOGGER.error("{} abnormally finished", cmds);
       LOGGER.error(e.getMessage(), e);
       LOGGER.info("Interrupt socket server");
       return -1;

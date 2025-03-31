@@ -10,8 +10,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MetaDataReaderThread extends Thread {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataReaderThread.class);
 
   private static MetaDataReaderThread m_singleton;
@@ -20,6 +24,9 @@ public class MetaDataReaderThread extends Thread {
   private static final int m_serverPort = 8090;
 
   private boolean serverInitialized = false;
+
+  private final ExecutorService m_thermoAccessThreadPool = Executors.newCachedThreadPool();
+
 
   public static MetaDataReaderThread getInstance() {
     if (m_singleton == null)
@@ -36,7 +43,6 @@ public class MetaDataReaderThread extends Thread {
 
   private MetaDataReaderThread() {
     super("MetaDataReader-Thread"); // useful for debugging
-    LOGGER.info("Create MetaDateReader Thread");
     setDaemon(false);
 
     m_actions = new LinkedList<>();
@@ -49,7 +55,7 @@ public class MetaDataReaderThread extends Thread {
   @Override
   public void run() {
     try {
-      LOGGER.debug(" START MetaDate Reader");
+      LOGGER.info(" START MetaDate Reader ...");
       SerializationCallback currentCallback = null;
       while (true) {
 
@@ -68,22 +74,24 @@ public class MetaDataReaderThread extends Thread {
         }
 
         if(!serverInitialized) {
-          LOGGER.debug("  ->  Init MzdbServer ");
+          LOGGER.trace("  ->  Init MzdbServer .... ");
           initServer();
           serverInitialized = true;
         }
 
         if(currentCallback != task.getCallback()) {
-          LOGGER.debug("  ->  add new callBack .... ");
+          LOGGER.trace("  ->  add new callBack .... ");
           MsDataConsumerMain.getInstance().addCallBack(task.getCallback());
           currentCallback = task.getCallback();
         }
 
         String rawPathOption;
         String rawPath;
+        final List<String> filesToProcess = new ArrayList<>();
         if(task instanceof MetaDataReaderTask) {
           rawPathOption = "-i";
           rawPath = ((MetaDataReaderTask)task).getInputFile().getAbsolutePath();
+          filesToProcess.add(rawPath);
         } else { //Is MetaDataReaderListTask
           rawPathOption = "-l";
           List<File> allFiles = ((MetaDataListReaderTask)task).getInputFiles();
@@ -91,35 +99,44 @@ public class MetaDataReaderThread extends Thread {
           for(int i= 0; i<allFiles.size(); i++ ){
             if(i>0)
               sb.append(";");
-            sb.append(allFiles.get(i).getAbsolutePath());
+            String nextFilePath = allFiles.get(i).getAbsolutePath();
+            sb.append(nextFilePath);
+            filesToProcess.add(nextFilePath);
           }
           rawPath = sb.toString();
         }
-        LOGGER.info("\n\n  WILL RUN  ThermoAccess Process with : "+rawPathOption+" ==> "+rawPath+"\n\n");
+
         //Process next task
         String[]  commandArg = new String[5];
         commandArg[0] = "metadata"; //Read meta data argument
         commandArg[1] = rawPathOption; //Input file
         commandArg[2] =rawPath;
         commandArg[3] ="-p";
-        commandArg[4] = Integer.toString(8090);
+        commandArg[4] = Integer.toString(m_serverPort);
 
         //Run ThermoAccess on its own Thread to allow multiple runs
        final SerializationCallback  finalCallBack = currentCallback;
-        Thread t = new Thread(() -> {
-          LOGGER.info("\n\n  WILL RUN  ThermoAccess Process with : "+rawPathOption+" ==> "+rawPath);
+        m_thermoAccessThreadPool.submit(() -> {
+          LOGGER.debug("\n\n  WILL RUN  ThermoAccess Process with : {} ==> {}", rawPathOption, rawPath);
           int errorCode = Thermo2Mzdb.startThermoAccess(commandArg); //Run process
-          LOGGER.info("  ->  ThermoAccess Process returned code: "+errorCode);
-          if(errorCode != 0){
-            finalCallBack.run(rawPath, new ArrayList<>(), false);
-          } //if no error, server should call callback with read data
-        });
-        t.setDaemon(false); // the main thread will wait for the ending of the server thread
-        t.start();
+          LOGGER.debug("  ->  ThermoAccess Process returned code: {}", errorCode);
+          if(errorCode == -1 || errorCode == 1 || errorCode == 2 || errorCode == 10 ) {
+            filesToProcess.forEach(filePath -> finalCallBack.run(filePath, new ArrayList<>(), false));
+          } //in other cases, server should have called callback with read data
 
+        });
       }
     } catch (Throwable t) {
       LOGGER.error("  -> Unexpected exception in main loop of MetaDataReaderThread", t);
+      m_thermoAccessThreadPool.shutdown();
+      try {
+        // Wait for all tasks to complete
+        if (!m_thermoAccessThreadPool.awaitTermination(60, TimeUnit.SECONDS)) {
+          m_thermoAccessThreadPool.shutdownNow();
+        }
+      } catch (InterruptedException e) {
+        m_thermoAccessThreadPool.shutdownNow();
+      }
       interrupt();
       m_singleton = null; // reset thread
     }
