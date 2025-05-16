@@ -11,7 +11,7 @@
     </parent>
 
     <properties>
-        <thermoAccess.version>1.0.2.3</thermoAccess.version>
+        <thermoAccess.version>1.0.2.4</thermoAccess.version>
         <thermoAccess.classifier>win-x64</thermoAccess.classifier>
         <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAcces could be in other classifier -->
     </properties>
