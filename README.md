@@ -1,4 +1,4 @@
-# MzdbConverter
+# msDataConverter
 
 ## Getting started
 
