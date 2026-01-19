@@ -34,7 +34,6 @@ public class Thermo2Mzdb {
         foundCommand = true;
     }
 
-
     // --- look for an available port between port=8090 (or specified port as argument) and port+100
     int portMax = port+100;
     boolean available = false;

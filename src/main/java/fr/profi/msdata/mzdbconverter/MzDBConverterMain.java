@@ -9,10 +9,10 @@ import fr.profi.msdata.timstof.Timstof2Mzdb;
 public class MzDBConverterMain {
 
     private static final String ThermoFormat = "thermo";
-    private static final String BruckerFormat = "brucker";
+    private static final String BrukerFormat = "bruker";
 
     public static void main(String[] argv) {
-        //Get input file format to call corresponding converter
+        //Get input file format to call the appropriate converter
         if(argv == null||argv.length <2){
             printBasicUsage();
             System.exit(1);
@@ -25,7 +25,7 @@ public class MzDBConverterMain {
             case ThermoFormat:
                 Thermo2Mzdb.main(newArgs);
                 break;
-            case BruckerFormat:
+            case BrukerFormat:
                 Timstof2Mzdb.main(newArgs);
                 break;
         }
@@ -36,8 +36,8 @@ public class MzDBConverterMain {
         System.out.println(" ----------- MzDBConverterMain Usage : ------------- ");
         System.out.println(" mzdbConverter.bat "+ThermoFormat+" XXXX : convert Thermo raw file to mzdb. To get specific option run ");
         System.out.println(" mzdbConverter.bat "+ThermoFormat+" --help");
-        System.out.println(" mzdbConverter.bat "+BruckerFormat+" XXXX : convert Brucker .d file to mzdb. To get specific option run ");
-        System.out.println(" mzdbConverter.bat "+BruckerFormat+" --help");
+        System.out.println(" mzdbConverter.bat "+BrukerFormat+" XXXX : convert Brucker .d file to mzdb. To get specific option run ");
+        System.out.println(" mzdbConverter.bat "+BrukerFormat+" --help");
     }
 
 
