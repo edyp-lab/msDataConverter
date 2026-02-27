@@ -7,19 +7,19 @@
     <parent>
         <artifactId>profi-pom</artifactId>
         <groupId>fr.proline</groupId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.3.0</version>
     </parent>
 
     <properties>
         <thermoAccess.version>1.0.3.0</thermoAccess.version>
         <thermoAccess.classifier>win-x64</thermoAccess.classifier>
-        <mzdb.version>1.3.2-SNAPSHOT</mzdb.version>
+        <mzdb.version>1.4.1</mzdb.version>
         <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAccess could be in other classifier -->
     </properties>
 
     <groupId>fr.profi.msdata</groupId>
     <artifactId>msdata-converter</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
     <name>msDataConverter</name>
 
     <dependencies>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>fr.profi.msdata</groupId>
             <artifactId>msdata-consumer</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
+            <version>1.4.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -91,7 +91,11 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <!-- Version inherited from ProFI-Pom -->
                 <executions>
-
+                    <!-- Désactive l'exécution par défaut -->
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>none</phase>
+                    </execution>
                     <execution>
                         <id>copy-config</id>
                         <phase>validate</phase>
@@ -104,6 +108,9 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.properties</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -120,6 +127,9 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/logback.xml</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -136,7 +146,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources</directory>
+                                    <directory>scripts</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>**/*.bat</include>
