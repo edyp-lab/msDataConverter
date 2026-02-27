@@ -1,4 +1,4 @@
-package fr.profi.timstof;
+package fr.profi.msdata.timstof;
 
 public enum MobilityRepresentationMethod {
 

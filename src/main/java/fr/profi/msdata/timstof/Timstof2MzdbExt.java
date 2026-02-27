@@ -1,4 +1,4 @@
-package fr.profi.timstof;
+package fr.profi.msdata.timstof;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.beust.jcommander.JCommander;
@@ -46,14 +46,10 @@ public class Timstof2MzdbExt extends Timstof2Mzdb {
   }
 
   @Override
-  protected void createMZdBData(){
+  protected void createMZdBData(File outFile){
     MzDBWriter writer = null;
 
     try {
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HH_mm_ss");
-      String date = dateFormat.format(Calendar.getInstance().getTime());
-      String outFilePath = m_ttFile.getAbsolutePath() +"_"+date+".mzdb";
-      File outFile = new File( outFilePath);
       BBSizes defaultBBsize = new BBSizes(5, 10000, 15, 0);
 
       MzDBMetaData mzDbMetaData =  createMzDbMetaData();
@@ -317,7 +313,7 @@ public class Timstof2MzdbExt extends Timstof2Mzdb {
       }
 
       inst = new Timstof2MzdbExt(ttDir, convertArgs.ms1, convertArgs.mobilityMethod);
-      inst.createMZdBData();
+      inst.createMZdBData(getOutputFile(convertArgs.outputFilename, ttDir));
 
     } catch (ParameterException pe) {
       LOG.info("Error parsing arguments: "+pe.getMessage());

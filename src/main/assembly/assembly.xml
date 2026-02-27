@@ -27,33 +27,17 @@
       <directory>${project.build.directory}</directory>
       <includes>
         <include>*.jar</include>
-      </includes>
-      <outputDirectory>/</outputDirectory>
-    </fileSet>
-
-    <fileSet>
-      <directory>${project.build.directory}/unzip-dependencies</directory>
-      <outputDirectory></outputDirectory>
-    </fileSet>
-
-
-    <fileSet>
-      <filtered>true</filtered>
-      <directory>resources</directory>
-      <includes>
+        <include>*.sh</include>
         <include>*.bat</include>
       </includes>
       <outputDirectory>/</outputDirectory>
     </fileSet>
 
     <fileSet>
-      <directory>${project.basedir}/src/main/resources/</directory>
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>*.conf</include>
-      </includes>
-      <filtered>true</filtered>
+      <directory>${project.build.directory}/unzip-dependencies</directory>
+      <outputDirectory/>
     </fileSet>
+
 
     <fileSet>
       <directory>${project.basedir}/src/main/resources</directory>

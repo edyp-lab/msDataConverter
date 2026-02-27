@@ -1,0 +1,1 @@
+.\jdk\bin\java -Xms512m -Xmx2G -Dlogback.configurationFile=./logback.xml -cp ".;./lib" -jar msdata-converter-@version@.jar %*

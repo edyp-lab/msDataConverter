@@ -7,52 +7,48 @@
     <parent>
         <artifactId>profi-pom</artifactId>
         <groupId>fr.proline</groupId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
     </parent>
 
     <properties>
-        <thermoAccess.version>1.0.2.4</thermoAccess.version>
+        <thermoAccess.version>1.0.3.0</thermoAccess.version>
         <thermoAccess.classifier>win-x64</thermoAccess.classifier>
-        <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAcces could be in other classifier -->
+        <mzdb.version>1.4.1</mzdb.version>
+        <os.classifier>windows-x64</os.classifier><!-- TODO use profile if ThermoAccess could be in other classifier -->
     </properties>
 
-    <groupId>fr.profi</groupId>
-    <artifactId>mzdb-converter</artifactId>
-    <version>1.2.5</version>
+    <groupId>fr.profi.msdata</groupId>
+    <artifactId>msdata-converter</artifactId>
+    <version>1.4.0-SNAPSHOT</version>
+    <name>msDataConverter</name>
 
     <dependencies>
 
         <dependency>
-            <groupId>fr.profi.mzdb.server</groupId>
-            <artifactId>MzdbServerWriter</artifactId>
-            <version>1.2.2</version>
+            <groupId>fr.profi.msdata</groupId>
+            <artifactId>msdata-consumer</artifactId>
+            <version>1.4.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>fr.profi</groupId>
             <artifactId>mzdb-access_${scala.compat.version}</artifactId>
-            <version>1.3.1</version>
+            <version>${mzdb.version}</version>
         </dependency>
         <dependency>
             <groupId>fr.profi</groupId>
             <artifactId>mzdb-processing_${scala.compat.version}</artifactId>
-            <version>1.3.1</version>
+            <version>${mzdb.version}</version>
         </dependency>
         <dependency>
             <groupId>fr.profi</groupId>
             <artifactId>timstof-access</artifactId>
-            <version>1.3.1</version>
+            <version>${mzdb.version}</version>
         </dependency>
-
-
         <dependency>
-            <groupId>fr.profi</groupId>
-            <artifactId>ThermoAccess</artifactId>
-            <version>${thermoAccess.version}</version>
-            <type>zip</type>
-            <classifier>${thermoAccess.classifier}</classifier>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>jdk</artifactId>
@@ -60,6 +56,14 @@
             <type>zip</type>
             <classifier>${os.classifier}</classifier>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.profi</groupId>
+            <artifactId>ThermoAccess</artifactId>
+            <version>${thermoAccess.version}</version>
+            <type>zip</type>
+            <classifier>${thermoAccess.classifier}</classifier>
         </dependency>
 
 
@@ -87,7 +91,11 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <!-- Version inherited from ProFI-Pom -->
                 <executions>
-
+                    <!-- Désactive l'exécution par défaut -->
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>none</phase>
+                    </execution>
                     <execution>
                         <id>copy-config</id>
                         <phase>validate</phase>
@@ -95,11 +103,14 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/classes/fr/profi/mzdbconverter</outputDirectory>
+                            <outputDirectory>${project.build.directory}/classes/fr/profi/msdata/mzdbconverter</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.properties</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -116,6 +127,9 @@
                                 <resource>
                                     <directory>src/main/resources</directory>
                                     <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/logback.xml</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
@@ -132,7 +146,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources</directory>
+                                    <directory>scripts</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>**/*.bat</include>
@@ -212,7 +226,7 @@
                             <classpathLayoutType>custom</classpathLayoutType>
                             <!--suppress UnresolvedMavenProperty -->
                             <customClasspathLayout>lib/${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}</customClasspathLayout>
-                            <mainClass>fr.profi.mzdbconverter.MzDBConverterMain</mainClass>
+                            <mainClass>fr.profi.msdata.mzdbconverter.MzDBConverterMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

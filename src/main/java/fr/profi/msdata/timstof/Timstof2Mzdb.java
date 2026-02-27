@@ -1,4 +1,4 @@
-package fr.profi.timstof;
+package fr.profi.msdata.timstof;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -100,7 +100,7 @@ public class Timstof2Mzdb {
 
         ParamTree pt = new ParamTree();
         List<UserParam> ups = new ArrayList<>();
-        ups.add(new UserParam(  "origin_file_format", "Timstof Brucker","xsd:string", null));
+        ups.add(new UserParam(  "origin_file_format", "Timstof Bruker","xsd:string", null));
         pt.setUserParams(ups);
         int currentTime = Long.valueOf(System.currentTimeMillis()).intValue();
         MzDbHeader mzdbHeader = new MzDbHeader("0.7", currentTime,  pt, null);
@@ -245,14 +245,22 @@ public class Timstof2Mzdb {
         return param;
     }
 
-    protected void createMZdBData(){
+    protected static File getOutputFile(String outputFilename, File inputFile) {
+
+      if (outputFilename != null) {
+        return new File(outputFilename);
+      }
+
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HH_mm_ss");
+      String date = dateFormat.format(Calendar.getInstance().getTime());
+      String outFilePath = inputFile.getAbsolutePath() +"_"+date+".mzdb";
+      return new File( outFilePath);
+    }
+
+    protected void createMZdBData(File outFile){
         MzDBWriter writer = null;
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HH_mm_ss");
-            String date = dateFormat.format(Calendar.getInstance().getTime());
-            String outFilePath = m_ttFile.getAbsolutePath() +"_"+date+".mzdb";
-            File outFile = new File( outFilePath);
 //            BBSizes newNBbSize = new BBSizes(10000, 10000,0,0);
             BBSizes defaultBBsize = new BBSizes(5, 10000, 15, 0);
 
@@ -554,7 +562,7 @@ public class Timstof2Mzdb {
             }
 
             inst = new Timstof2Mzdb(ttDir, ms1Method);
-            inst.createMZdBData();
+            inst.createMZdBData(getOutputFile(convertArgs.outputFilename, ttDir));
 
         } catch (ParameterException pe) {
             LOG.info("Error parsing arguments: "+pe.getMessage());
