@@ -11,7 +11,7 @@
     </parent>
 
     <properties>
-        <thermoAccess.version>1.0.3.0</thermoAccess.version>
+        <thermoAccess.version>1.0.3.1</thermoAccess.version>
         <mzdb.version>1.5.0-SNAPSHOT</mzdb.version>
         <os.classifier>windows-x64</os.classifier>
     </properties>

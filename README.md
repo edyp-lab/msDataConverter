@@ -22,9 +22,11 @@ This tool can also be used as a library, especially to read metadata from raw fi
 
 ## Release History
 
-### 1.4.0
+### 1.4.0 (snapshot)
 
-Create distribution for Linux and Windows.
+* Create a distribution for Linux and Windows.
+* Update dependencies of ThermoAccess to read more Run MetaData
+* [DEV] Updated mzdb-access and mzdb-processing dependencies to use dynamic `classifier`
 
 ### 1.3.0
 
